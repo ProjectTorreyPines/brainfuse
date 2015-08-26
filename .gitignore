@@ -1,0 +1,7 @@
+OMFITsave.txt
+*.exe
+*~
+./output_avg.dat
+./output_std.dat
+brainfuse.net
+brainfuse.dat
