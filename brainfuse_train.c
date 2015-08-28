@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
   struct fann_train_data* validData;
   struct fann* ann;
   float trainError;
+  float bestTrainError;
   float validError;
   float bestValidError;
 
@@ -48,23 +49,34 @@ int main(int argc, char *argv[])
   printf("Read valid from file %s\n", validFile);
   validData=fann_read_train_from_file(validFile);
 
-  for(i = 1; i <= maxEpochs; i++)
-  {
+  fann_set_quickprop_decay(ann,1);
+
+  for(i = 1; i <= maxEpochs; i++){
       trainError = fann_train_epoch(ann, trainData);
 
       trainError = fann_test_data(ann, trainData);
       validError = fann_test_data(ann, validData);
 
-      if ((i==1) | (validError<bestValidError)){
+      if (i==1) {
+        bestValidError=validError;
+        bestTrainError=trainError;
+      }
+
+      if ((i==1)|(validError<bestValidError)){
         bestValidError=validError;
         fann_save(ann, annFile);
         printf("*");
       }else{
         printf(" ");
       }
+      if ((i==1)|(trainError<bestTrainError)){
+          bestTrainError=trainError;
+      }
 
-      printf("Epochs     %8d. E_train: %.10f     E_valid: %.10f\n", i, trainError, validError);
+      fann_set_quickprop_decay(ann,MIN(1.0,MAX(1-1E-3,1+(trainError-bestValidError)/bestTrainError*1E-6)));
+
+    printf("Epochs:%8d  E_train:%.10f  E_valid:%.10f  decay:%f\n", i, trainError/bestValidError, validError/bestValidError, fann_get_quickprop_decay(ann));
   }
-        
+
   return 0;
 }
