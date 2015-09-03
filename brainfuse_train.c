@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
           bestTrainError=trainError;
       }
 
-      fann_set_quickprop_decay(ann,MIN(1.0,MAX(1-1E-3,1+(trainError-bestValidError)/bestTrainError*1E-6)));
+      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 );
 
-    printf("Epochs:%8d  E_train:%.10f  E_valid:%.10f  decay:%f\n", i, trainError/bestValidError, validError/bestValidError, fann_get_quickprop_decay(ann));
+    printf("Epochs:%8d  v:%.10f  v_rel:%.10f  decay:%g\n", i, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
   }
 
   return 0;
