@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     }
 
   // Read in input parameters
-  unsigned int maxEpochs = 100;
+  int maxEpochs = 100;
   int i;
   const char* annFile = argv[1];
   const char* trainFile = argv[2];
@@ -51,7 +51,8 @@ int main(int argc, char *argv[])
 
   fann_set_quickprop_decay(ann,1);
 
-  for(i = 1; i <= maxEpochs; i++){
+  i=1;
+  while (i<=abs(maxEpochs)) {
       trainError = fann_train_epoch(ann, trainData);
 
       trainError = fann_test_data(ann, trainData);
@@ -66,6 +67,9 @@ int main(int argc, char *argv[])
         bestValidError=validError;
         fann_save(ann, annFile);
         printf("*");
+        if (maxEpochs<0){
+            i=1;
+        }
       }else{
         printf(" ");
       }
@@ -73,9 +77,11 @@ int main(int argc, char *argv[])
           bestTrainError=trainError;
       }
 
-      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 );
+      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data *10 );
 
-    printf("Epochs:%8d  v:%.10f  v_rel:%.10f  decay:%g\n", i, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
+      printf("Epochs:%8d  v:%.10f  v_rel:%.10f  decay:%g\n", i, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
+
+      i++;
   }
 
   return 0;
