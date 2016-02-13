@@ -29,19 +29,19 @@ int main(int argc, char *argv[])
   for (n = 1; n < argc-1; n++){
       // Load the network from the file
       annFile = argv[n];
-      if verbose;  printf("Reading network file %s\n", annFile);
+      if (verbose)  printf("Reading network file %s\n", annFile);
       ann = fann_create_from_file(annFile);
       if (ann == NULL){
-        if verbose;  printf("Invalid network file %s\n", annFile);
+        if (verbose)  printf("Invalid network file %s\n", annFile);
         return -1;
       }
 
     if (n==1){
         // Read input data
-        if verbose;  printf("Reading data from file %s: ", runFile);
+        if (verbose)  printf("Reading data from file %s: ", runFile);
         fp1 = fopen(runFile, "r");
         fscanf(fp1, "%u\n", &num_data);
-        if verbose;  printf("%u runs %d inputs %d ouputs\n", num_data, ann->num_input, ann->num_output);
+        if (verbose)  printf("%u runs %d inputs %d ouputs\n", num_data, ann->num_input, ann->num_output);
         data_avg = fann_create_train(num_data, ann->num_input, ann->num_output);
         data_std = fann_create_train(num_data, ann->num_input, ann->num_output);
         data_lim = fann_create_train(num_data, ann->num_input, ann->num_output);
@@ -117,17 +117,17 @@ int main(int argc, char *argv[])
   fprintf(fp3,"%u\n",num_data);
   fprintf(fp4,"%u\n",num_data);
   for(i = 0; i < data_avg->num_data; i++){
-      if verbose;  printf("Run %d: ",i);
+      if (verbose)  printf("Run %d: ",i);
       for(j = 0; j < data_avg->num_input; j++){
         fprintf(fp3,"%f ",data_lim->input[i][j]);
       }
       for(j = 0; j < data_avg->num_output; j++){
-          if verbose;  printf("%f (%f) ",data_avg->output[i][j],data_std->output[i][j] );
+          if (verbose)  printf("%f (%f) ",data_avg->output[i][j],data_std->output[i][j] );
           fprintf(fp1,"%f ",data_avg->output[i][j]);
           fprintf(fp2,"%f ",data_std->output[i][j]);
           fprintf(fp4,"%f ",data_lim->output[i][j]);
       }
-      if verbose;  printf("\n");
+      if (verbose)  printf("\n");
       fprintf(fp3,"\n");
       fprintf(fp1,"\n");
       fprintf(fp2,"\n");
