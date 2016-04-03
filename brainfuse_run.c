@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         data_nrm = fann_create_train(num_data, ann->num_input, ann->num_output);
     	for(i = 0; i < num_data; i++){
             for(j = 0; j < ann->num_input; j++){
-                            fscanf(fp1, FANNSCANF " ", &data_avg->input[i][j]);
+                fscanf(fp1, FANNSCANF " ", &data_avg->input[i][j]);
 			    data_std->input[i][j]=data_avg->input[i][j];
 			    data_lim->input[i][j]=data_avg->input[i][j];
 			    data_nrm->input[i][j]=data_avg->input[i][j];
@@ -99,13 +99,11 @@ int main(int argc, char *argv[])
           data_std->output[i][j]=sqrt( (data_std->output[i][j]- (data_avg->output[i][j]*data_avg->output[i][j])/(argc-2))/(argc-2) ) * data_nrm->output[i][j];
           //avg
           data_avg->output[i][j]=data_avg->output[i][j]/(argc-2) * data_nrm->output[i][j];
-          //lim
-          //data_lim->output[i][j]=data_avg->output[i][j];
-	  data_lim->output[i][j]=data_std->output[i][j]/ann->scale_deviation_out[j];
+          //rng (NOTE: takes last ANN and not respective ANN, but it's good approx)
+	      data_lim->output[i][j]=data_std->output[i][j]/ann->scale_deviation_out[j];
       }
-      //lim (NOTE: takes last ANN and not an average or something like that. But that's ok.)
+      //lim (NOTE: takes last ANN and not respective ANN, but it's good approx)
       fann_scale_input( ann, data_lim->input[i] );
-      //fann_scale_output( ann, data_lim->output[i] );
   }
 
   // print and write
