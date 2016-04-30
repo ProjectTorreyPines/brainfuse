@@ -77,12 +77,12 @@ int main(int argc, char *argv[])
           bestTrainError=trainError;
       }
 
-      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data *10 );
+      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data *1000 );
 
       if (maxEpochs>0) {
-        printf("Epochs:%8d  v:%.10f  v_rel:%.10f  decay:%g\n", totEpochs, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
+        printf("Epochs:%8d  t:%.10f  v:%.10f  v_rel:%.10f  decay:%g\n", totEpochs, trainError, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
       }else{
-        printf("Epochs(%.2f):%8d v:%.10f  v_rel:%.10f  decay:%g\n", (float)i/(float)abs(maxEpochs), totEpochs, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
+        printf("Epochs(%.2f):%8d t:%.10f  v:%.10f  v_rel:%.10f  decay:%g\n", (float)i/(float)abs(maxEpochs), totEpochs, trainError, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
       }
       fflush(stdout);
 
