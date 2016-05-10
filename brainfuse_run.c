@@ -4,18 +4,7 @@
 #include <math.h>
 #include <string.h>
 
-void bubble_sort(fann_type *list, long n){
-  long c, d, t;
-  for (c = 0 ; c < ( n - 1 ); c++){
-      for (d = 0 ; d < n - c - 1; d++){
-	  if (list[d] > list[d+1]){
-	      t         = list[d];
-	      list[d]   = list[d+1];
-	      list[d+1] = t;
-	    }
-	}
-    }
-}
+//NOTE: this assumes that the training database is the same for all NN
 
 int main(int argc, char *argv[])
 {
@@ -37,6 +26,7 @@ int main(int argc, char *argv[])
   FILE *fp1, *fp2, *fp3, *fp4;
   char dummy[100000];
   char *result = NULL;
+  char * pch;
   int verbose = 0;
 
   // array of pointers to store all of the anns
@@ -78,24 +68,29 @@ int main(int argc, char *argv[])
 			}
 		}
 	    fclose(fp1);
-     }
 
-     //output normalization (ann dependent)
-     fp2 = fopen(annFile,"r");
-     for(i = 0; i < 46; i++){
-       fgets(dummy,100000,fp2);
+        //output normalization
+        fp2 = fopen(annFile,"r");
+        for(i = 0; i < 47; i++){
+          fgets(dummy,100000,fp2);
+        }
+        if (strstr(dummy, "norm_output=") != NULL){
+            pch = strtok(dummy+12," \n");
+            for(j = 0; j < ann->num_output; j++){
+                for(k = 0; k < ann->num_input; k++){
+                   tmp=atof(pch);
+                   pch = strtok (NULL, " \n");
+                   if (tmp!=0){
+                       for(i = 0; i < num_data; i++){
+                           data_nrm->output[i][j]*=pow(data_nrm->input[i][k],tmp);
+                       }
+                   }
+                }
+            }
+        }
+        fclose(fp2);
+
      }
-     if (fscanf(fp2,"norm_output=") == 1){
-         for(i = 0; i < num_data; i++){
-             for(j = 0; j < ann->num_output; j++){
-                 for(k = 0; k < ann->num_input; k++){
-                     fscanf(fp2, FANNSCANF " ", &tmp);
-                     data_nrm->output[i][j]*=pow(data_nrm->input[i][k],tmp);
-                 }
-             }
-         }
-     }
-     fclose(fp2);
 
      //run
      for(i = 0; i != data_avg->num_data; i++){
