@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
   // Check input consistency
   if (argc < 3)
     {
-      printf("Usage: %s ANN_file training_file [validation_file [maxEpochs]]\n", argv[0]);
+      printf("Usage: %s ANN_file trainingFile [validationFile] [maxEpochs] [weightDecay]\n", argv[0]);
       return -1;
     }
 
@@ -31,11 +31,14 @@ int main(int argc, char *argv[])
   float bestTrainError;
   float validError;
   float bestValidError;
+  float weightDecay = 0;
 
   if (argc < 3)
     validFile = trainFile;
   if (argc > 4)
     maxEpochs = atoi(argv[4]);
+  if (argc > 5)
+    weightDecay = atoi(argv[5]);
 
   // Load the network form the file
   printf("Reading network file %s\n", annFile);
@@ -77,7 +80,7 @@ int main(int argc, char *argv[])
           bestTrainError=trainError;
       }
 
-      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data *1000 );
+      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data *1000 + weightDecay );
 
       if (maxEpochs>0) {
         printf("Epochs:%8d  t:%.10f  v:%.10f  v_rel:%.10f  decay:%g\n", totEpochs, trainError, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
