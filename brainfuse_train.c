@@ -39,11 +39,11 @@ int main(int argc, char *argv[])
   if (argc > 4)
     maxEpochs = atoi(argv[4]);
   if (argc > 5)
-    weightDecay = atoi(argv[5]);
+    weightDecay = atof(argv[5]);
   if (argc > 6)
-    springDecay = atoi(argv[6]);
+    springDecay = atof(argv[6]);
 
-  printf("max epochs: %d  weight decay: %3.3f\n",maxEpochs,weightDecay);
+  printf("max_epochs: %d  weight_decay: %3.3f  spring_decay: %3.3f\n",maxEpochs,weightDecay,springDecay);
 
   // Load the network form the file
   printf("Reading network file %s\n", annFile);
@@ -85,7 +85,11 @@ int main(int argc, char *argv[])
           bestTrainError=trainError;
       }
 
-      fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data * 1000 * springDecay + weightDecay );
+      if (validError>trainError){
+	fann_set_quickprop_decay(ann, (1-MIN(1.0,MAX(1-1E-3,1+(trainError-validError)*(trainError/(bestValidError*bestTrainError))*1E-6)))*1E6 / trainData->num_data * 1000 * springDecay + weightDecay );
+      }else{
+	fann_set_quickprop_decay(ann, weightDecay );
+      }
 
       if (maxEpochs>0) {
         printf("Epochs:%8d  t:%.10f  v:%.10f  v_rel:%.10f  decay:%g\n", totEpochs, trainError, validError, validError/bestValidError, fann_get_quickprop_decay(ann) );
