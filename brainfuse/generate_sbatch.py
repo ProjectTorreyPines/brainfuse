@@ -134,4 +134,5 @@ module load conda/omfit
 ############################################
 
 if '__main__' in __name__:
-    print(generate_sbatch('runme.py','saturn12','sbatch_run.sh'))
+    import sys
+    print(generate_sbatch(*sys.argv[1:]))

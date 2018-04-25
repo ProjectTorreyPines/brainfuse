@@ -7,4 +7,6 @@ brainfuse.net
 brainfuse.dat
 sbatch_run.sh
 .idea
+*.out
+*.pyc
 \#*\#
