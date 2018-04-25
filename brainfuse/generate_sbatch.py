@@ -30,9 +30,24 @@ def generate_sbatch(python_script, serverPicker=None, sbatch_file=None, **kw):
         kw['name']=os.path.splitext(os.path.split(python_script)[1])[0]
 
     #========================
+    # EDISON
+    #========================
+    if 'edison' in serverPicker:
+        kw.setdefault('environ','''
+module purge
+module load python
+''')
+        kw.setdefault('nodes',1)
+        kw.setdefault('ntasks',24)
+        kw.setdefault('mem',12)
+        kw.setdefault('python_command','python -u')
+        kw.setdefault('extra_opts',')
+        serverPicker='iris'
+
+    #========================
     # IRIS
     #========================
-    if 'iris' in serverPicker:
+    elif 'iris' in serverPicker:
         kw.setdefault('environ','''
 module purge
 module load conda/omfit
@@ -41,9 +56,7 @@ module load conda/omfit
         kw.setdefault('ntasks',16)
         kw.setdefault('mem',12)
         kw.setdefault('python_command','python -u')
-        kw.setdefault('extra_opts','''
-#SBATCH --gres=gpu:1
-''')
+        kw.setdefault('extra_opts','')
         serverPicker='iris'
 
     #========================
