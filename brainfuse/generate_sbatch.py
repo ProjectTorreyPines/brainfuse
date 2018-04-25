@@ -1,6 +1,6 @@
 def generate_sbatch(python_script, serverPicker=None, sbatch_file=None, **kw):
     '''
-    :param python_script: python script to submit
+    :param python_script: path to the python script to run
 
     :param serverPicker: server to submit to [if None uses localhost]
 
@@ -16,7 +16,7 @@ def generate_sbatch(python_script, serverPicker=None, sbatch_file=None, **kw):
 
     :param environ: environment to load
 
-    :param sbatch_file: write sbatch to file if not None
+    :param sbatch_file: string of the path to the sbatch to file to write (if not None)
 
     :return: string with sbatch script
     '''
@@ -134,5 +134,6 @@ module load conda/omfit
 ############################################
 
 if '__main__' in __name__:
+
     import sys
     print(generate_sbatch(*sys.argv[1:]))
