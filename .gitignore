@@ -1,8 +1,8 @@
 OMFITsave.txt
 *.exe
 *~
-./output_avg.dat
-./output_std.dat
+FANN/output_avg.dat
+FANN/output_std.dat
 brainfuse.net
 brainfuse.dat
 .idea
