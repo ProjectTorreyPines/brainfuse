@@ -41,7 +41,7 @@ module load python
         kw.setdefault('ntasks',24)
         kw.setdefault('mem',12)
         kw.setdefault('python_command','python -u')
-        kw.setdefault('extra_opts',')
+        kw.setdefault('extra_opts','')
         serverPicker='iris'
 
     #========================
